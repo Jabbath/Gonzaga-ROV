@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ROV Control Center</title>
+  <link rel="stylesheet" href="bin/jquery-ui-1.11.2/jquery-ui.css">
+  <script src="bin/jquery-2.1.1.js"></script>
+  <script src="bin/jquery-ui-1.11.2/jquery-ui.js"></script>
+  <script>
+//This block allow johnny-five to run properly
+var Readable = require("stream").Readable;
+var util = require("util");
+util.inherits(MyStream, Readable);
+function MyStream(opt) {
+  Readable.call(this, opt);
+}
+MyStream.prototype._read = function() {};
+// hook in our stream
+process.__defineGetter__("stdin", function() {
+  if (process.__stdin) return process.__stdin;
+  process.__stdin = new MyStream();
+  return process.__stdin;
+});
+
+var five = require('johnny-five');
+var nodecontroller = require('node-usbcontroller');
+var config = require('./data/attack3.json');
+
+var board = new five.Board();
+var ready = false;
+var motors = [{isActive: false}]; //Make this contain activation states for all motors and if this changes send it via the socket
+var servos = []; //^Same as above except they will be controlled on clientside with jquery-ui sliders for higher accuracy (or with slider on gamepad)
+var servo;
+
+var controller = new nodecontroller(1133,49684,config);
+
+controller.on('y-axis',function(data){
+	data = Math.round(data/1.42); //Servo type inputs take a range from 0-180, data has a max of 255
+	
+	if(ready){
+	servo.to(data);
+	$('#log').html("Moving motor 1 to " + data);
+	$('#slider').slider('value',data);
+	}
+});
+
+board.on('ready', function(){
+	ready = true;
+	console.log('board connected');
+	servo = new five.Servo(3);
+});  
+
+function changeSpeed(event, ui){
+	servo.to(ui.value);
+	console.log('servo moving to %d',ui.value);
+}  
+
+
+$(function(){
+	$( "#slider" ).slider({
+	slide: function( event, ui ) {$('#log').html(ui.value);},
+	max: 180
+	});
+});
+
+  </script>
+</head>
+<body>
+ 
+<div id="slider"></div>
+<p id="log"></p>
+ 
+ 
+</body>
+</html>
