@@ -1,0 +1,7 @@
+node_modules
+bin/jquery-ui-1.11.2
+bin/jquery-2.1.1.js
+credits.html
+*.dll
+*.exe
+nw.pak
