@@ -16,17 +16,41 @@ var ready = false;
 var motors = []; //will contain activation states for all motors
 var servos = [];
 
-function motor(pin){
-	this.motor = new five.Servo(pin);
-	this.active = false;
-	this.sliderId = 'motor' + motors.length;
-	var sliderId = this.sliderId; //So the jquery function can access it
-	$('#motorSliderContainer').append('<div id=' + this.sliderId + '></div>');
+function motor(pin,nameTag){
+	var self = this; //So that inner func. can have access to the this vars
+	self.motor = new five.Servo(pin);
+	self.active = false;
+	self.sliderId = 'motor' + motors.length; //Ex. motor0
+	self.statusId = self.sliderId + 'status';//Ex. motor0status
+	
+	self.changeStatus = function(){
+		self.active = !self.active; //flip the activation state
+		
+		var id = '#' + self.statusId;
+		var classes = $(id).attr('class').split(/\s+/); // Find the classes that are active
+		
+		if(classes[1] === 'statusDisabled'){
+			$(id).removeClass('statusDisabled').addClass('statusEnabled'); //Remove the class responsible for disabled color and add enabled
+			$(id).html(nameTag + ' Enabled');
+		}
+		else if(classes[1] === 'statusEnabled'){
+			$(id).removeClass('statusEnabled').addClass('statusDisabled');
+			$(id).html(nameTag + ' Disabled');
+		}
+	};
+	
+	self.manualChange = function(event,ui){ //if we want to slide with the mouse
+		if(self.active) self.motor.to(ui.value);
+	};
+	
+	$('#motorSliderContainer').append('<div class="sliderWrapper"><div id=' + self.sliderId + '></div></div>');
+	$('#motorStatusContainer').append('<div class="thrusterStatus statusDisabled" id=' + self.statusId + '>' + nameTag + ' Disabled </div>'); 
 	
 	$(function(){
-		$('#' + sliderId).slider({
+		$('#' + self.sliderId).slider({
 			max:180,
-			value: 90 
+			value: 90,
+			slide: self.manualChange
 		});		
 	});
 }
@@ -49,36 +73,43 @@ try{
 	
 	controller.on('button2',function(data){
 		if(!ready) return;
-		motors[0].active = !motors[0].active;
+		console.log('button2 fired, changing state of motor 0');
+		motors[0].changeStatus();
 	});
 	
 	controller.on('button3',function(data){
 		if(!ready) return;
-		motors[1].active = !motors[1].active;
+		console.log('button2 fired, changing state of motor 1');
+		motors[1].changeStatus();
 	});
 
 	controller.on('button4',function(data){
 		if(!ready) return;
-		motors[2].active = !motors[2].active;
+		console.log('button3 fired, changing state of motor 2');
+		motors[2].changeStatus();
 	});
 	
 	controller.on('button5',function(data){
 		if(!ready) return;
-		motors[3].active = !motors[3].active;
+		console.log('button4 fired, changing state of motor 3');
+		motors[3].changeStatus();
 	});
 }
 catch(err){
 	console.log(err);
+	//TODO: If the controller is not connected start polling for it until it is
 }
 
 board.on('ready', function(){
 	console.log('board connected');
 	$('#arduinoStatus').html('Arduino Connected').css('background-color','#45F70D');
 	
-	motors.push(new motor(3));
-	motors.push(new motor(4));
-	motors.push(new motor(5));
-	motors.push(new motor(6));
+	motors.push(new motor(3,'Left Forward'));//Initialize the motors
+	motors.push(new motor(4,'Right Forward'));
+	motors.push(new motor(5,'Left Up'));
+	motors.push(new motor(6,'Right Up'));
+	
+	
 	
 	if(motors.length === 4){//Checking length is probably an innefective means of finding connection number
 		$('#motorsStatus').html(motors.length + ' Motors Connected').css('background-color','#45F70D');
@@ -90,8 +121,3 @@ board.on('ready', function(){
 
 	ready = true;
 });  
-
-function changeSpeed(event, ui){
-	servo.to(ui.value);
-	console.log('servo moving to %d',ui.value);
-}  

@@ -1,5 +1,9 @@
+body{
+margin-top: 15px;
+background-color: #E8E8E8;
+}
+
 div.statusContainer{
-position: relative;
 }
 
 div.status{
@@ -12,6 +16,39 @@ float: left;
 margin-left: 5px;
 }
 
-div#motorSliderContainer{
+div.sliderWrapper{
+margin-bottom: 50px;
+}
 
+div#motorSliderContainer{
+width: calc(100% - 165px);
+float: left;
+}
+
+div.thrusterStatus{
+width: 125px;
+height: 50px;
+margin-bottom: 10px;
+padding-left: 15px;
+}
+
+div.statusDisabled{
+background-color: #FF140D;
+}
+
+div.statusEnabled{
+background-color: #45F70D;
+}
+
+div#motors{
+position: absolute;
+left: calc(60% - 165px);
+/* the 165 px is status width + padding + a small gap of 25px */
+width: calc(40% + 165px);
+}
+
+div#motorStatusContainer{
+width: 141px;
+float: right;
+margin-right: 5px;
 }
