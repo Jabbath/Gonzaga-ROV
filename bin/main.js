@@ -73,26 +73,26 @@ try{
 	
 	controller.on('button2',function(data){
 		if(!ready) return;
-		console.log('button2 fired, changing state of motor 0');
-		motors[0].changeStatus();
+		console.log('button 2 fired, changing state of motor 3');
+		motors[3].changeStatus();
 	});
 	
 	controller.on('button3',function(data){
 		if(!ready) return;
-		console.log('button2 fired, changing state of motor 1');
-		motors[1].changeStatus();
+		console.log('button 3 fired, changing state of motor 2');
+		motors[2].changeStatus();
 	});
 
 	controller.on('button4',function(data){
 		if(!ready) return;
-		console.log('button3 fired, changing state of motor 2');
-		motors[2].changeStatus();
+		console.log('button 4 fired, changing state of motor 0');
+		motors[0].changeStatus();
 	});
 	
 	controller.on('button5',function(data){
 		if(!ready) return;
-		console.log('button4 fired, changing state of motor 3');
-		motors[3].changeStatus();
+		console.log('button 5 fired, changing state of motor 1');
+		motors[1].changeStatus();
 	});
 }
 catch(err){
@@ -108,6 +108,8 @@ board.on('ready', function(){
 	motors.push(new motor(4,'Right Forward'));
 	motors.push(new motor(5,'Left Up'));
 	motors.push(new motor(6,'Right Up'));
+	//motors.push(new motor(7,'Claw Servo')); //Push these to the servos array
+	//motors.push(new motor(8,'Rudder Servo'));
 	
 	
 	
