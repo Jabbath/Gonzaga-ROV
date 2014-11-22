@@ -126,6 +126,7 @@ catch(err){
 }
 
 board.on('ready', function(){
+	if(ready) return; //If computer goes to sleep this event will refire, this stops that
 	console.log('board connected');
 	$('#arduinoStatus').html('Arduino Connected').css('background-color','#45F70D');
 	
