@@ -16,11 +16,11 @@ var ready = false;
 var motors = []; //will contain activation states for all motors
 var servos = [];
 
-function motor(pin,nameTag){
+function motor(pin,nameTag,uniqueId){
 	var self = this; //So that inner func. can have access to the this vars
 	self.motor = new five.Servo(pin);
 	self.active = false;
-	self.sliderId = 'motor' + motors.length; //Ex. motor0
+	self.sliderId = 'motor' + uniqueId; //Ex. motor0
 	self.statusId = self.sliderId + 'status';//Ex. motor0status
 	
 	self.changeStatus = function(){
@@ -60,7 +60,7 @@ try{
 
 	if(controller) $('#controllerStatus').html('Controller Connected').css('background-color','#45F70D');
 
-	controller.on('y-axis',function(data){
+	controller.on('y-axis',function(data){//This handles thruster control
 		data = Math.round(data/1.42); //Servo type inputs take a range from 0-180, data has a max of 255
 	
 		motors.forEach(function(val){ //cycle through each motor, and if they are active move them
@@ -94,6 +94,31 @@ try{
 		console.log('button 5 fired, changing state of motor 1');
 		motors[1].changeStatus();
 	});
+	
+	controller.on('lever',function(data){//This handles servo control
+		if(!ready) return;
+		data = Math.round(data/1.42); //0 is open 180 is closed
+		console.log('moving servo to %d',data);
+		
+		servos.forEach(function(val){
+			if(val.active){
+				val.motor.to(data);
+				$('#' + val.sliderId).slider('value',data);
+			}
+		});
+	});
+	
+	controller.on('button10',function(data){
+		if(!ready) return;
+		console.log('button 10 fired, activating servo 0');
+		servos[0].changeStatus();
+	});
+	
+	controller.on('button11',function(data){
+		if(!ready) return;
+		console.log('button 11 fired, activating servo 1');
+		servos[1].changeStatus();
+	});
 }
 catch(err){
 	console.log(err);
@@ -104,12 +129,12 @@ board.on('ready', function(){
 	console.log('board connected');
 	$('#arduinoStatus').html('Arduino Connected').css('background-color','#45F70D');
 	
-	motors.push(new motor(3,'Left Forward'));//Initialize the motors
-	motors.push(new motor(4,'Right Forward'));
-	motors.push(new motor(5,'Left Up'));
-	motors.push(new motor(6,'Right Up'));
-	//motors.push(new motor(7,'Claw Servo')); //Push these to the servos array
-	//motors.push(new motor(8,'Rudder Servo'));
+	motors.push(new motor(3,'Left Forward','0'));//Initialize the motors
+	motors.push(new motor(4,'Right Forward','1'));
+	motors.push(new motor(5,'Left Up','2'));
+	motors.push(new motor(6,'Right Up','3'));
+	servos.push(new motor(7,'Claw Servo','4')); //Push these to the servos array
+	servos.push(new motor(8,'Rudder Servo','5'));
 	
 	
 	

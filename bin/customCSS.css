@@ -6,6 +6,7 @@ background-color: #E8E8E8;
 div.statusContainer{
 }
 
+/* The Arduino Status's and controller etc...*/
 div.status{
 position: relative;
 background-color: #FF140D;
@@ -28,7 +29,7 @@ float: left;
 div.thrusterStatus{
 width: 125px;
 height: 50px;
-margin-bottom: 10px;
+margin-bottom: 16.078px;
 padding-left: 15px;
 }
 
@@ -43,12 +44,11 @@ background-color: #45F70D;
 div#motors{
 position: absolute;
 left: calc(60% - 165px);
-/* the 165 px is status width + padding + a small gap of 25px */
-width: calc(40% + 165px);
+width: calc(40% + 165px); /* the 165 px is status width + padding + a small gap of 25px */
 }
 
 div#motorStatusContainer{
 width: 141px;
 float: right;
-margin-right: 5px;
+margin-right: 5px; /*So we aren't right at the edge of the page */
 }
