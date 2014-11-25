@@ -61,7 +61,7 @@ try{
 	if(controller) $('#controllerStatus').html('Controller Connected').css('background-color','#45F70D');
 
 	controller.on('y-axis',function(data){//This handles thruster control
-		data = Math.round(data/1.42); //Servo type inputs take a range from 0-180, data has a max of 255
+		data = 180 - Math.round(data/1.42); //Servo type inputs take a range from 0-180, data has a max of 255
 	
 		motors.forEach(function(val){ //cycle through each motor, and if they are active move them
 			if(val.active){
@@ -127,7 +127,7 @@ catch(err){
 
 board.on('ready', function(){
 	if(ready) return; //If computer goes to sleep this event will refire, this stops that
-	console.log('board connected');
+	console.log('board connected',board.firmata);
 	$('#arduinoStatus').html('Arduino Connected').css('background-color','#45F70D');
 	
 	motors.push(new motor(3,'Left Forward','0'));//Initialize the motors
