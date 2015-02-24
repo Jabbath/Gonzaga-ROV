@@ -13,6 +13,7 @@ var ready = false;
 #3-top right thruster      #
 ############################
 */
+
 var motors = []; //will contain activation states for all motors
 var servos = [];
 
@@ -127,7 +128,7 @@ catch(err){
 
 board.on('ready', function(){
 	if(ready) return; //If computer goes to sleep this event will refire, this stops that
-	console.log('board connected',board.firmata);
+	console.log('board connected');
 	$('#arduinoStatus').html('Arduino Connected').css('background-color','#45F70D');
 	
 	motors.push(new motor(3,'Left Forward','0'));//Initialize the motors
@@ -148,4 +149,5 @@ board.on('ready', function(){
 	}
 
 	ready = true;
+	
 });  
