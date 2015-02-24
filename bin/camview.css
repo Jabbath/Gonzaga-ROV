@@ -1,0 +1,41 @@
+body{
+margin-top: 0px;
+margin-bottom: 0px;
+}
+
+/*The z-index of the next 3 must be such that the canvas has the highest index*/ 
+video#video{
+position: absolute;
+width: 100%;
+height: 100%;
+top: 0px;
+left: 0px;
+z-index: -1;
+}
+
+canvas#videoCanvas{
+z-index: 1;
+}
+
+div#videoContainer{
+position: absolute;
+width: 80%;
+height: 100%;
+top: 0px;
+left: 0px;
+z-index: 0;
+}
+
+div#controlsContainer{
+position:absolute;
+width: 20%;
+height: 100%;
+left:80%;
+}
+
+div#messageBox{
+width:100%;
+height: 20%;
+}
+
+

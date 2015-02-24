@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<link rel="stylesheet" href="camview.css">
+<title>ROV Forward Cam</title>
+<body>
+
+<div id="videoContainer">
+	<canvas id="videoCanvas"></canvas>
+	<video id="video" autoplay></video>
+</div>
+
+<div id="controlsContainer">
+	<div id="messageBox"></div>
+	<button type="button" onclick="startRecording()">Start</button> </br>
+	Reference Distance (m):
+	<input id="referDist" type="text" name="refDist"></input>
+</div>
+
+</body>
+<script src="jquery-2.1.1.js"></script>
+<script src="jquery-ui-1.11.2/jquery-ui.js"></script>
+<script src="webcam.js"></script>
+</html>

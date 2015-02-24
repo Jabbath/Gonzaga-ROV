@@ -1,6 +1,11 @@
 var five = require('johnny-five');
 var nodecontroller = require('node-usbcontroller');
 var config = require('./data/attack3.json');
+var gui = require('nw.gui');
+
+var newWin = gui.Window.open('./bin/camview.html',{position: 'center',
+width: 1300,
+height: 1024}); //Open our camera window
 
 var board = new five.Board();
 var ready = false;
