@@ -42,14 +42,23 @@ function handleVideo(stream){
 
 $('#videoCanvas').click(canvasClick);
 
+/* This section handles the clicking and everything else*/
+
 var references = [];
 var points = [];
 
+function clearCanvas(){//Clears the canvas that covers our video
+	var canvas = document.getElementById('videoCanvas');
+	var context = canvas.getContext('2d');
+	context.clearRect ( 0 , 0 , canvas.width, canvas.height );//Draw a transparent rectangle over the whole canvas
+}
+
 function startRecording(){
-	recording = !recording;
+	recording = true;
 	$('#messageBox').html('Select two reference points');
 	references = [];//reset our points
 	points = [];
+	clearCanvas();
 }
 
 /*
@@ -70,7 +79,7 @@ function hyp(coord){
 function processData(){
 	var refDelta = delta(references[0],references[1]);//Get our px/cm
 	var refPX = hyp(refDelta);
-	var refDist =  parseInt($('#referDist').val())
+	var refDist =  parseFloat($('#referDist').val())
 	
 	if(isNaN(refDist)){//If a number is not entered
 		$('#messageBox').html('Fill in the reference distance and restart');
@@ -89,6 +98,16 @@ function processData(){
 	recording = false;
 }
 
+function drawCircle(coord){
+	var canvas = document.getElementById('videoCanvas');//select our canvas
+	var context = canvas.getContext('2d');
+	
+	context.beginPath();//start drawing
+	context.arc(coord[0],coord[1],5,2*Math.PI,false);//draw an circle
+	context.fillStyle = 'red';
+	context.fill();//color it red
+}
+
 /*
 input: Object
 output: none
@@ -102,16 +121,31 @@ function canvasClick(event){
 	
 	if(references.length < 2){
 		references.push([x,y]);
+		drawCircle([x,y]);
 	}
 	else if(references.length === 2 && points.length < 2){
 		$('#messageBox').html('Select two points');
 		points.push([x,y]);
+		drawCircle([x,y]);
 	}
 	
 	if(references.length === 2 && points.length === 2){
 		console.log('here');
 		processData();
 	}
+}
+
+function tanCalc(){
+	var opposite = parseFloat($('#opposite').val());
+	var adjacent = parseFloat($('#adjacent').val());
+	
+	if(isNaN(opposite) || isNaN(adjacent)){
+		$('#messageBox').html('Bad values for tan calculator');
+		return false;
+	}
+	
+	var tan = Math.atan(opposite/adjacent)*180/Math.PI;
+	$('#messageBox').html(tan + ' degrees');
 }
 
 $(document).ready(function(){

@@ -7,7 +7,7 @@ var newWin = gui.Window.open('./bin/camview.html',{position: 'center',
 width: 1300,
 height: 1024}); //Open our camera window
 
-var board = new five.Board();
+//var board = new five.Board();
 var ready = false;
 
 /*
