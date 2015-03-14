@@ -4,5 +4,8 @@
   "window": {
   "width" : 926,
   "height": 460
+  },
+  "webkit": {
+	"page-cache": false
   }
 }

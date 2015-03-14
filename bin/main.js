@@ -10,6 +10,25 @@ height: 1024}); //Open our camera window
 var board = new five.Board();
 var ready = false;
 
+var lasers = [];
+
+function switchLasers(){
+	if(lasers[0] === undefined || lasers[1] === undefined){ //Check if the lasers aren't set yet
+		console.log('fired laser event but lasers are not set');
+		return false;
+	}
+	
+	function flip(num){//Made into a separate function so that the async callback still has access to the laser number
+		lasers[num].query(function(state){
+		console.log('pin %d is %d',num,state.value);
+			state.value === 1 ? lasers[num].write(0) : lasers[num].write(1);
+		});
+	}
+	
+	for(var i=0;i<2;i++){//cycle through each pin, check its state and flip it
+		flip(i);
+	}
+}
 /*
 ############################
 #0-left forward thruster   #
@@ -125,6 +144,12 @@ try{
 		console.log('button 11 fired, activating servo 1');
 		servos[1].changeStatus();
 	});
+	
+	controller.on('button6',function(data){
+		if(!ready) return;
+		console.log('button 6 firing, changing laser status');
+		switchLasers();
+	});
 }
 catch(err){
 	console.log(err);
@@ -142,8 +167,9 @@ board.on('ready', function(){
 	motors.push(new motor(6,'Right Up','3'));
 	servos.push(new motor(7,'Claw Servo','4')); //Push these to the servos array
 	servos.push(new motor(8,'Rudder Servo','5'));
-	
-	
+	lasers.push(new five.Pin({pin: 22, type: 'digital'}));//Init our lasers
+	lasers.push(new five.Pin({pin: 23, type: 'digital'}));
+	console.log(lasers);
 	
 	if(motors.length === 4){//Checking length is probably an innefective means of finding connection number
 		$('#motorsStatus').html(motors.length + ' Motors Connected').css('background-color','#45F70D');
