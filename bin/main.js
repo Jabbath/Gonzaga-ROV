@@ -84,8 +84,10 @@ try{
 	var controller = new nodecontroller(1133,49684,config);
 
 	if(controller) $('#controllerStatus').html('Controller Connected').css('background-color','#45F70D');
-
+	var turning = false;
+	
 	controller.on('y-axis',function(data){//This handles thruster control
+		if(turning) return; //We don't want to fire the other motors while turning
 		data = 180 - Math.round(data/1.42); //Servo type inputs take a range from 0-180, data has a max of 255
 	
 		motors.forEach(function(val){ //cycle through each motor, and if they are active move them
@@ -94,6 +96,32 @@ try{
 				$('#' + val.sliderId).slider('value',data);
 			}
 		});
+	});
+	
+	controller.on('x-axis', function(data){
+		if(!turning || !ready) return; //We should only run this if we are turning and the arduino is connected
+		data = Math.round(data/1.42);
+		var left = data; //Right is always firing the opposite direction of left
+		var right = 180 - data;
+		
+		//console.log('left thruster value: %d, right thruster value: %d',left,right);
+		motors[0].motor.to(left);
+		$('#' + motors[0].sliderId).slider('value',left);
+		motors[1].motor.to(right);
+		$('#' + motors[1].sliderId).slider('value',right);
+	});
+	
+	controller.on('trigger',function(data){
+		turning = !turning;
+		
+		if(!turning){//Change the status icon
+			$('#turningStatus').removeClass('statusEnabled').addClass('statusDisabled'); //Turn it red
+			$('#turningStatus').html('Not Turning');
+		}
+		else{
+			$('#turningStatus').removeClass('statusDisabled').addClass('statusEnabled'); //Turn it green
+			$('#turningStatus').html('Turning');
+		}
 	});
 	
 	controller.on('button2',function(data){
