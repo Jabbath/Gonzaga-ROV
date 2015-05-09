@@ -88,21 +88,22 @@ try{
 	
 	controller.on('y-axis',function(data){//This handles thruster control
 		if(turning) return; //We don't want to fire the other motors while turning
-		data = 180 - Math.round(data/1.42); //Servo type inputs take a range from 0-180, data has a max of 255
+		data = 135 - Math.round(data/2.83); //Servo type inputs take a range from 45-135, data has a max of 255
 	
 		motors.forEach(function(val){ //cycle through each motor, and if they are active move them
 			if(val.active){
 				val.motor.to(data);
 				$('#' + val.sliderId).slider('value',data);
+				//console.log(data);
 			}
 		});
 	});
 	
 	controller.on('x-axis', function(data){
 		if(!turning || !ready) return; //We should only run this if we are turning and the arduino is connected
-		data = Math.round(data/1.42);
-		var left = data; //Right is always firing the opposite direction of left
-		var right = 180 - data;
+		data = Math.round(data/2.83);
+		var left = 45 + data; //Right is always firing the opposite direction of left
+		var right = 135 - data;
 		
 		//console.log('left thruster value: %d, right thruster value: %d',left,right);
 		motors[0].motor.to(left);
@@ -111,7 +112,7 @@ try{
 		$('#' + motors[1].sliderId).slider('value',right);
 	});
 	
-	controller.on('trigger',function(data){
+	controller.on('trigger',function(data){//controls whether turning capability is enabled
 		turning = !turning;
 		
 		if(!turning){//Change the status icon
@@ -189,12 +190,11 @@ board.on('ready', function(){
 	console.log('board connected');
 	$('#arduinoStatus').html('Arduino Connected').css('background-color','#45F70D');
 	
-	motors.push(new motor(3,'Left Forward','0'));//Initialize the motors
-	motors.push(new motor(4,'Right Forward','1'));
-	motors.push(new motor(5,'Left Up','2'));
-	motors.push(new motor(6,'Right Up','3'));
+	motors.push(new motor(8,'Left Forward','0'));//Initialize the motors
+	motors.push(new motor(9,'Right Forward','1'));
+	motors.push(new motor(10,'Left Up','2'));
+	motors.push(new motor(11,'Right Up','3'));
 	servos.push(new motor(7,'Claw Servo','4')); //Push these to the servos array
-	servos.push(new motor(8,'Rudder Servo','5'));
 	lasers.push(new five.Pin({pin: 22, type: 'digital'}));//Init our lasers
 	lasers.push(new five.Pin({pin: 23, type: 'digital'}));
 	console.log(lasers);
