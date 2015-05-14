@@ -195,9 +195,16 @@ board.on('ready', function(){
 	motors.push(new motor(10,'Left Up','2'));
 	motors.push(new motor(11,'Right Up','3'));
 	servos.push(new motor(7,'Claw Servo','4')); //Push these to the servos array
-	lasers.push(new five.Pin({pin: 22, type: 'digital'}));//Init our lasers
-	lasers.push(new five.Pin({pin: 23, type: 'digital'}));
-	console.log(lasers);
+	
+	if(board.type !== 'UNO'){//The UNO doesn't have pins 22 || 23 so we have to assign diff pins for the lasers
+		lasers.push(new five.Pin({pin: 22, type: 'digital'}));//Init our lasers
+		lasers.push(new five.Pin({pin: 23, type: 'digital'}));
+		console.log('lasers inited', lasers);
+	}
+	else{
+		lasers.push(new five.Pin({pin: 12, type: 'digital'}))
+		lasers.push(new five.Pin({pin: 13, type: 'digital'}))
+	}
 	
 	if(motors.length === 4){//Checking length is probably an innefective means of finding connection number
 		$('#motorsStatus').html(motors.length + ' Motors Connected').css('background-color','#45F70D');
