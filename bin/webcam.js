@@ -18,7 +18,7 @@ Looks through media sources to find the dazzle
 */
 function gotSources(sources){
 	for(var i=0;i<sources.length;i++){
-		if(sources[i].label === "Dazzle DVC100 Video (2304:021a)"){
+		if(sources[i].label.indexOf("Dazzle DVC100 Video") > -1){
 			src = sources[i].id;
 		}
 	}
