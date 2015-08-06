@@ -168,10 +168,18 @@ try{
 		servos[0].changeStatus();
 	});
 	
-	controller.on('button11',function(data){
+	controller.on('button8',function(data){
 		if(!ready) return;
-		console.log('button 11 fired, activating servo 1');
-		servos[1].changeStatus();
+		console.log('button 8 fired, changing state of motor 0 and 1');
+		motors[0].changeStatus();
+		motors[1].changeStatus();
+	});
+	
+	controller.on('button9',function(data){
+		if(!ready) return;
+		console.log('button 9 fired, changing state of motor 3 and 4');
+		motors[2].changeStatus();
+		motors[3].changeStatus();
 	});
 	
 	controller.on('button6',function(data){
